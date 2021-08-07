@@ -1,8 +1,8 @@
-﻿@{
+﻿@model HomeViewModel
+@{
     ViewBag.Title = "Home Page";
 }
-
-<div class="container text-center">
+<div class="container text-center col-12">
     <div class="row">
         <div class="col-sm-4 offset-1">
             <h5>Number Recognition</h5>
@@ -18,10 +18,46 @@
 
     </div>
     <div class="row">
-        holi
+        <form asp-action="UploadFile" asp-controller="Home"
+              enctype="multipart/form-data" class="col-12"
+              method="post">
+            <div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-4">
+                            <label class="btn btn-dark btn-file">
+                                Browse <input type="file" asp-for="file"
+                                              style="display: none;" required id="fileinput" onchange="$('#selected_filename').text($('#fileinput')[0].files[0].name)">
+                            </label>
+                            <label id="selected_filename">No file selected</label>
+                        </div>
+                        <input type="submit" value="Upload" class="btn-dark border offset-1 col-1" />
+                        @ViewBag.Message
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
     <div class="row">
         NO TENGO NI IDEA DE DONDE EMPEZAR
+        @if (ViewBag.bytes != null)
+        {
+            <img id="image" src="@("data:image/png;base64," + (String)ViewBag.bytes)" />
+        }
     </div>
 
 </div>
+<script>
+    $('#fileForm').submit(function (e) {
+        e.preventDefault();
+        debugger;
+        var formFile = $("#fileinput")[0].files[0];
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("UploadFile")',
+            data: { file: formFile },
+            dataType: "json"
+        });
+    });
+</script>
